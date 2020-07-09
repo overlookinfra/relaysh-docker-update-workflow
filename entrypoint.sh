@@ -5,5 +5,5 @@ FILENAME=$(git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA} | grep yaml
 
 if [[ -n ${FILENAME} ]]; then
   WORKFLOW=$(basename ${FILENAME} .yaml)
-echo "${RELAY_PASSWORD}" | relay auth login ${RELAY_USERNAME} -p
+echo "${INPUT_RELAY_PASSWORD}" | relay auth login ${INPUT_RELAY_USERNAME} -p
 relay workflow replace ${WORKFLOW} -f ${FILENAME}
