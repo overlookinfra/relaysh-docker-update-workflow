@@ -1,17 +1,12 @@
 name: 'Update relay.sh workflow on commit'
 description: 'This action will update a named workflow on the service from github'
 inputs:
-  # in addition to these, the GitHub Action workflow needs to set
-  # RELAY_USERNAME and RELAY_PASSWORD from repository or org secrets
-  workflow_name:
-    description: "Name of the workflow on the service to update"
+  relay_username:
     required: true
-  repo_name:
-    description: "Github username/repo where the workflow source code lives"
+    description: "Username on the relay service (stored as a repo secret)"
+  relay_password:
     required: true
-  workflow_path:
-    description: "path/subdir/filename.yml relative to repo root of the workflow source"
-    required: true
+    description: "Login password for relay (stored as a repo secret)"
 outputs:
   reponse:
     description: "response message from the relay service"
