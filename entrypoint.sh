@@ -1,10 +1,9 @@
 #!/bin/bash
 
-workflow_name=$INPUT_WORKFLOW_NAME
-repo_name=$INPUT_REPO_NAME
-workflow_path=$INPUT_WORKFLOW_PATH
-username=$RELAY_USERNAME
-password=$RELAY_PASSWORD
+cd ${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY}
+FILENAME=$(git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA} | grep yaml | head -1)
 
-echo "$password" | relay auth login $username -p
-relay workflow update $workflow_name -f $workflow_path
+if [[ -n ${FILENAME} ]]; then
+  WORKFLOW=$(basename ${FILENAME} .yaml)
+echo "${RELAY_PASSWORD}" | relay auth login ${RELAY_USERNAME} -p
+relay workflow replace ${WORKFLOW} -f ${FILENAME}
