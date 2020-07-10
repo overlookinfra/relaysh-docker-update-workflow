@@ -13,3 +13,6 @@ outputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+branding:
+  icon: 'link-2'
+  color: 'purple'
