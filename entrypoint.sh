@@ -6,7 +6,11 @@ cd ${GITHUB_WORKSPACE}
 
 ls -la
 
+echo "diff-tree:"
+git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA} 
+
 FILENAME=$(git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA} | grep yaml | head -1)
+echo "filename: ${FILENAME}"
 
 if [[ -n ${FILENAME} ]]; then
   WORKFLOW=$(basename ${FILENAME} .yaml)
