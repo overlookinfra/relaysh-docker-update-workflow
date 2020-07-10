@@ -18,14 +18,10 @@ To use it, add a GitHub Actions workflow in the repo where you keep your Relay w
 ```yaml
 name: update-workflow-on-commit
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches: [ main ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
   update:
     runs-on: ubuntu-latest
     steps:
