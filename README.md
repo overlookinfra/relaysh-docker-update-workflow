@@ -35,6 +35,6 @@ jobs:
         fetch-depth: 0
     - uses: ahpook/relaysh-docker-update-workflow@master
       with:
-	RELAY_USERNAME: ${{ secrets.RELAY_USERNAME }}
-	RELAY_PASSWORD: ${{ secrets.RELAY_PASSWORD }}
+        RELAY_USERNAME: ${{ secrets.RELAY_USERNAME }}
+        RELAY_PASSWORD: ${{ secrets.RELAY_PASSWORD }}
 ```
