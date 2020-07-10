@@ -3,6 +3,9 @@
 set -x
 
 cd ${GITHUB_WORKSPACE}
+
+ls -la
+
 FILENAME=$(git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA} | grep yaml | head -1)
 
 if [[ -n ${FILENAME} ]]; then
