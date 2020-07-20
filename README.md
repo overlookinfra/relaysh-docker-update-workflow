@@ -29,7 +29,7 @@ on:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: ahpook/relaysh-docker-update-workflow@master
+    - uses: ahpook/relaysh-docker-update-workflow@main
       with:
         RELAY_USERNAME: ${{ secrets.RELAY_USERNAME }}
         RELAY_PASSWORD: ${{ secrets.RELAY_PASSWORD }}
