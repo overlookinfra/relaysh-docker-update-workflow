@@ -2,7 +2,7 @@
 
 cd ${GITHUB_WORKSPACE}
 
-FILENAME=$(git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA} | grep yaml | head -1)
+FILENAME=$(git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA} | grep '${INPUT_RELAY_WORKFLOWDIR}/.*ya?ml' | head -1)
 echo "filename: ${FILENAME}"
 
 if [[ -n ${FILENAME} ]]; then

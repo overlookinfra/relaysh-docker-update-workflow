@@ -7,6 +7,9 @@ inputs:
   relay_password:
     required: true
     description: "Login password for relay (stored as a repo secret)"
+  relay_workflowdir:
+    required: true
+    description: "Directory relative to the repository root to find relay workflows"
 outputs:
   reponse:
     description: "response message from the relay service"
