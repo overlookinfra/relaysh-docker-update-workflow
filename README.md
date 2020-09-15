@@ -6,7 +6,7 @@ This github action will update a relay.sh workflow upon commit to a repo.
 
 It has a couple of restrictions, specifically:
 
-- the workflows live in a specific subdirectory, given by the RELAY_WORKFLOWDIR parameter
+- the workflows live in a specific subdirectory, given by the RELAY_WORKFLOWDIR parameter (no leading slash)
 - the commit contains no more than one yaml file, which is the workflow to be updated
 - the workflow name on the service matches the filename, minus the .yaml extension
 - you've set up repo secrets RELAY_USERNAME and RELAY_PASSWORD with your login creds to relay
@@ -34,5 +34,5 @@ on:
       with:
         RELAY_USERNAME: ${{ secrets.RELAY_USERNAME }}
         RELAY_PASSWORD: ${{ secrets.RELAY_PASSWORD }}
-        RELAY_WORKFLOWDIR: "/relay-workflows"
+        RELAY_WORKFLOWDIR: "relay-workflows"
 ```
