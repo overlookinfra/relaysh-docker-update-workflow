@@ -12,5 +12,7 @@ if [[ -n ${FILENAME} ]]; then
   exit $?
 else
   echo "Could not determine filename from git diff-tree at ${GITHUB_SHA}"
+  echo "Diff tree was: "
+  git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA}
   exit 1
 fi
