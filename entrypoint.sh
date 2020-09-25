@@ -17,8 +17,8 @@ if [[ -n ${FILENAME} ]]; then
     exit 0
   fi
 else
-  echo "Could not determine filename from git diff-tree at ${GITHUB_SHA}"
+  echo "Could not find a workflow name from git diff-tree at ${GITHUB_SHA}"
   echo "Diff tree was: "
   git diff-tree -r --name-only --no-commit-id ${GITHUB_SHA}
-  exit 1
+  exit 0
 fi
