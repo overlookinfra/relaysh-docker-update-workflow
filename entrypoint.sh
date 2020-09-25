@@ -7,8 +7,8 @@ echo "filename: ${FILENAME}"
 
 if [[ -n ${FILENAME} ]]; then
   WORKFLOW=$(basename ${FILENAME} .yaml)
-  echo "${INPUT_RELAY_PASSWORD}" | relay auth login --debug ${INPUT_RELAY_USERNAME} -p
-  [[ $? == 0 ]] && relay workflow replace --debug ${WORKFLOW} -f ${FILENAME}
+  echo "${INPUT_RELAY_PASSWORD}" | relay auth login ${INPUT_RELAY_USERNAME} -p
+  [[ $? == 0 ]] && relay workflow replace ${WORKFLOW} -f ${FILENAME}
   exit $?
 else
   echo "Could not determine filename from git diff-tree at ${GITHUB_SHA}"
