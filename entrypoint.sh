@@ -8,7 +8,7 @@ echo "filename: ${FILENAME}"
 if [[ -n ${FILENAME} ]]; then
   WORKFLOW=$(basename ${FILENAME} .yaml)
   echo "${INPUT_RELAY_PASSWORD}" | relay auth login ${INPUT_RELAY_USERNAME} -p
-  [[ $? == 0 ]] && relay workflow get ${WORKFLOW} >/dev/null
+  [[ $? == 0 ]] && relay workflow download ${WORKFLOW} >/dev/null
   if [[ $? == 0 ]]; then 
     relay workflow replace ${WORKFLOW} -f ${FILENAME}
     exit $?
