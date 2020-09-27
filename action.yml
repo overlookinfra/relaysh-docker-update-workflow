@@ -1,6 +1,12 @@
 name: 'Updates and runs a relay.sh workflow on commit'
 description: 'This action will update and run a named workflow on the service from github'
 inputs:
+  relay_host_api:
+    required: false
+    description: "Relay Host API address"
+  relay_host_ui:
+    required: false
+    description: "Relay Host UI address"
   relay_username:
     required: true
     description: "Username on the relay service (stored as a repo secret)"
