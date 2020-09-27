@@ -3,6 +3,15 @@
 cd ${GITHUB_WORKSPACE}
 
 if [[ -n ${INPUT_RELAY_WORKFLOW_FILE} ]]; then
+  mkdir -p ~/.config/relay
+  if [[ -n ${INPUT_RELAY_HOST_API} ]]; then
+    echo 'api_domain: ' ${INPUT_RELAY_HOST_API} >> ~/.config/relay/config.yaml
+  fi
+
+  if [[ -n ${INPUT_RELAY_HOST_UI} ]]; then
+    echo 'ui_domain: ' ${INPUT_RELAY_HOST_UI} >> ~/.config/relay/config.yaml
+  fi
+
   echo "${INPUT_RELAY_PASSWORD}" | relay auth login ${INPUT_RELAY_USERNAME} -p
   [[ $? == 0 ]] && relay workflow download ${INPUT_RELAY_WORKFLOW} >/dev/null
   if [[ $? == 0 ]]; then
