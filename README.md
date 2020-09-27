@@ -1,23 +1,13 @@
 # relaysh-docker-action
 
-This github action will update a relay.sh workflow upon commit to a repo.
-
-## Caveats
-
-It has a couple of restrictions, specifically:
-
-- the workflows live in a specific subdirectory, given by the RELAY_WORKFLOWDIR parameter (no leading slash)
-- the commit contains no more than one yaml file, which is the workflow to be updated
-- the workflow name on the service matches the filename, minus the .yaml extension
-- you've set up repo secrets RELAY_USERNAME and RELAY_PASSWORD with your login creds to relay
+This github action will update and run a relay.sh workflow upon commit to a repo.
 
 ## Usage
 
-To use it, add a GitHub Actions workflow in the repo where you keep your Relay workflows
-(Sorry for the terminology overlap, it's a crowded namespace!).
+To use it, add a GitHub Actions workflow in the repo where you keep your Relay workflows.
 
 ```yaml
-name: update-workflow-on-commit
+name: update-and-run-workflow-on-commit
 
 on:
   push:
@@ -26,13 +16,13 @@ on:
   update:
     runs-on: ubuntu-latest
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: ahpook/relaysh-docker-update-workflow@main
+    - uses: puppetlabs/relaysh-docker-update-workflow@main
       with:
         RELAY_USERNAME: ${{ secrets.RELAY_USERNAME }}
         RELAY_PASSWORD: ${{ secrets.RELAY_PASSWORD }}
-        RELAY_WORKFLOWDIR: "relay-workflows"
+        RELAY_WORKFLOW: "relay-workflow-name"
+        RELAY_WORKFLOW_FILE: "relay.yaml"
 ```

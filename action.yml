@@ -1,5 +1,5 @@
-name: 'Update relay.sh workflow on commit'
-description: 'This action will update a named workflow on the service from github'
+name: 'Updates and runs a relay.sh workflow on commit'
+description: 'This action will update and run a named workflow on the service from github'
 inputs:
   relay_username:
     required: true
@@ -7,9 +7,15 @@ inputs:
   relay_password:
     required: true
     description: "Login password for relay (stored as a repo secret)"
-  relay_workflowdir:
+  relay_workflow:
     required: true
-    description: "Directory relative to the repository root to find relay workflows"
+    description: "Relay workflow name"
+  relay_workflow_file:
+    required: true
+    description: "Relay workflow file"
+  relay_workflow_run_parameters:
+    required: false
+    description: "Relay workflow run parameters"
 outputs:
   reponse:
     description: "response message from the relay service"
