@@ -19,14 +19,14 @@ if [[ -n ${INPUT_RELAY_WORKFLOW_FILE} ]]; then
   fi
 
   echo "${INPUT_RELAY_PASSWORD}" | relay auth login ${INPUT_RELAY_USERNAME} -p
-  #Skipping this check for now (until the latest Relay CLI has been released)
-  #[[ $? == 0 ]] && relay workflow download ${WORKFLOW} >/dev/null
-  # if [[ $? == 0 ]]; then
-  relay workflow replace ${WORKFLOW} -f ${INPUT_RELAY_WORKFLOW_FILE}
-  relay workflow run ${WORKFLOW} ${INPUT_RELAY_WORKFLOW_RUN_PARAMETERS}
-  exit $?
-  # else
-  #   echo "no workflow matching ${WORKFLOW} found, exiting cleanly"
-  #   exit 0
-  # fi
+  [[ $? == 0 ]] && relay workflow download ${WORKFLOW} >/dev/null
+  if [[ $? == 0 ]]; then
+    relay workflow replace ${WORKFLOW} -f ${INPUT_RELAY_WORKFLOW_FILE}
+  else
+    relay workflow add ${WORKFLOW} -f ${INPUT_RELAY_WORKFLOW_FILE}
+  fi
+
+  if [[ $? == 0 ]]; then
+    relay workflow run ${WORKFLOW} ${INPUT_RELAY_WORKFLOW_RUN_PARAMETERS}
+  fi
 fi
