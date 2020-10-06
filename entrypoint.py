@@ -7,20 +7,11 @@ from subprocess import CalledProcessError, PIPE, STDOUT, run
 
 os.chdir(env['GITHUB_WORKSPACE'])
 
-# set up configuration if needed
-if env['INPUT_RELAY_HOST_API'] or env['INPUT_RELAY_HOST_UI']:
-  configpath = env['HOME'] + "/.relay/"
-  configfile = configpath + "config.yaml"
-  try: 
-    os.makedirs(configpath)
-  except FileExistsError:
-    pass
-
-  with open(configfile,'a') as configfd:
-    if env['INPUT_RELAY_HOST_API']: 
-      configfd.write("api_domain: " + env['INPUT_RELAY_HOST_API'] + "\n")
-    if env['INPUT_RELAY_HOST_UI']:
-      configfd.write("ui_domain: " + env['INPUT_RELAY_HOST_UI'] + "\n")
+# translate from github env vars to the ones Relay CLI expects
+if env['INPUT_RELAY_HOST_API']: 
+  os.putenv("RELAY_API_DOMAIN",env['INPUT_RELAY_HOST_API'])
+if env['INPUT_RELAY_HOST_UI']:
+  os.putenv("RELAY_UI_DOMAIN",env['INPUT_RELAY_HOST_UI'])
 
 # set up the file and workflow name to operate on
 workflow_file = env['INPUT_RELAY_WORKFLOW_FILE']
