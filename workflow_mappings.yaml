@@ -1,0 +1,4 @@
+- name: hello-world
+  file: hello-world.yaml
+- name: randomworkflowname
+  file: hello-world.yaml
