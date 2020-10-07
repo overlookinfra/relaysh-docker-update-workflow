@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+import os, yaml
 # we're doing lots of environment manipulation, so make it easy
 from os import environ as env
 from subprocess import CalledProcessError, PIPE, STDOUT, run
@@ -65,12 +65,30 @@ def add_new_workflow(workflow_file,workflow_name):
   print("Added new workflow to your account, view it on the web:", add_result.stdout)
   exit(0)
 
+# we expect config to be a yaml list of maps, each with keys
+# - `file` for the filesystem path to its corresponding file in the repo
+# - `name` for the service name of the workflow and 
+def update_workflows():
+
+  mapping_file = 'workflow_mappings.yaml'
+
+  if os.path.exists(mapping_file):
+    with open(mapping_file) as config:
+      mappings = yaml.load(config, Loader=yaml.FullLoader)
+    
+    for entry in mappings:
+      workflow_file, workflow_name, workflow_contents = setup_workflow(entry['file'], entry['name'])
+      download_and_replace(workflow_file, workflow_name, workflow_contents)
+
+  else:  # no config file, test for environment vars to operate on one workflow
+    workflow_file, workflow_name, workflow_contents = setup_workflow(env['INPUT_RELAY_WORKFLOW_FILE'], env['INPUT_RELAY_WORKFLOW'])
+    download_and_replace(workflow_file,workflow_name,workflow_contents)
+
 os.chdir(env['GITHUB_WORKSPACE'])
 
 configure_cli()
 
 do_login()
 
-workflow_file, workflow_name, workflow_contents = setup_workflow(env['INPUT_RELAY_WORKFLOW_FILE'], env['INPUT_RELAY_WORKFLOW'])
+update_workflows()
 
-download_and_replace(workflow_file,workflow_name,workflow_contents)

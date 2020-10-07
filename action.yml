@@ -14,14 +14,11 @@ inputs:
     required: true
     description: "Login password for relay (stored as a repo secret)"
   relay_workflow:
-    required: true
+    required: false
     description: "Relay workflow name"
   relay_workflow_file:
-    required: true
-    description: "Relay workflow file"
-  relay_workflow_run_parameters:
     required: false
-    description: "Relay workflow run parameters"
+    description: "Relay workflow file"
 outputs:
   reponse:
     description: "response message from the relay service"
