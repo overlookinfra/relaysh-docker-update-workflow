@@ -30,7 +30,7 @@ def setup_workflow(workflow_file, workflow_name):
 def do_login():
   try:
     # BUG args should be a sequence but the relay command only sees the first one
-    login_command = "relay auth login " + env['INPUT_RELAY_USERNAME'] + " -p"
+    login_command = "/usr/local/bin/relay auth login " + env['INPUT_RELAY_USERNAME'] + " -p"
     login_result = run(login_command, input=env['INPUT_RELAY_PASSWORD'], 
       stderr=STDOUT, stdout=PIPE, check=True, shell=True, text=True)
   except CalledProcessError as e:
@@ -40,7 +40,7 @@ def do_login():
 def download_and_replace(workflow_file,workflow_name,workflow_contents):
   # download, compare, update if local version changed
   try:
-    download_command = "relay workflow download " + workflow_name
+    download_command = "/usr/local/bin/relay workflow download " + workflow_name
     download_result = run(download_command, capture_output=True, check=True, shell=True, text=True)
   except CalledProcessError as e:
     if e.stdout.find("could not find record"):
@@ -49,7 +49,7 @@ def download_and_replace(workflow_file,workflow_name,workflow_contents):
 
   if workflow_contents != download_result.stdout:
     try:
-      replace_command = "relay workflow replace " + workflow_name + " -f " + workflow_file
+      replace_command = "/usr/local/bin/relay workflow replace " + workflow_name + " -f " + workflow_file
       replace_result = run(replace_command, capture_output=True, check=True, shell=True, text=True)
     except CalledProcessError as e:
       print("Could not replace workflow", e, e.stdout)
@@ -57,7 +57,7 @@ def download_and_replace(workflow_file,workflow_name,workflow_contents):
 
 def add_new_workflow(workflow_file,workflow_name):
   try:
-    add_command = "relay workflow add " + workflow_name + " -f" + workflow_file
+    add_command = "/usr/local/bin/relay workflow add " + workflow_name + " -f" + workflow_file
     add_result = run(add_command, capture_output=True, check=True, shell=True, text=True)
   except CalledProcessError as e:
     print("Could not add new workflow", e, e.stdout)
