@@ -2,26 +2,30 @@
 
 import os
 import yaml
-# we're doing lots of environment manipulation, so make it easy
-from os import environ as env
+from os import environ
+from shlex import join, quote
 from subprocess import CalledProcessError, PIPE, STDOUT, run
 
+cli_args = []
 
-def configure_cli():
-    # translate from github env vars to the ones Relay CLI expects
-    if env['INPUT_RELAY_HOST_API']:
-        os.putenv("RELAY_API_DOMAIN", env['INPUT_RELAY_HOST_API'])
-    if env['INPUT_RELAY_HOST_UI']:
-        os.putenv("RELAY_UI_DOMAIN", env['INPUT_RELAY_HOST_UI'])
+config = environ['INPUT_RELAY_CONFIGURATION_FILE']
+if config:
+    cli_args.extend(["--config", quote(config)])
+
+context = environ['INPUT_RELAY_CONFIGURATION_CONTEXT']
+if context:
+    cli_args.extend(["--context", quote(context)])
+
+debug = environ['INPUT_RELAY_CONFIGURATION_DEBUG']
+if debug:
+    cli_args.append("--debug")
 
 
 def setup_workflow(workflow_file, workflow_name):
-    # set up the file and workflow name to operate on
     try:
-        stat = os.stat(workflow_file)
         with open(workflow_file) as wf_obj:
             workflow_contents = wf_obj.read
-    except:
+    except IOError:
         print("Workflow file specified does not exist:", workflow_file)
         exit(1)
 
@@ -33,33 +37,33 @@ def setup_workflow(workflow_file, workflow_name):
 
 def do_login():
     try:
-        # BUG args should be a sequence but the relay command only sees the first one
-        login_command = "relay auth login " + \
-            env['INPUT_RELAY_USERNAME'] + " -p"
-        login_result = run(login_command, input=env['INPUT_RELAY_PASSWORD'],
-                           stderr=STDOUT, stdout=PIPE, check=True, shell=True, text=True)
+        login_command = ["relay", "auth", "login", "--stdin"]
+        login_command.extend(cli_args)
+        run(join(login_command), input=environ['INPUT_RELAY_API_TOKEN'],
+            stderr=STDOUT, stdout=PIPE, check=True, shell=True, text=True)
     except CalledProcessError as e:
         print("Relay login failed: ", e, e.stdout)
         exit(1)
 
 
 def download_and_replace(workflow_file, workflow_name, workflow_contents):
-    # download, compare, update if local version changed
     try:
-        download_command = "relay workflow download " + workflow_name
+        download_command = ["relay", "workflow",
+                            "download", quote(workflow_name)]
+        download_command.extend(cli_args)
         download_result = run(
-            download_command, capture_output=True, check=True, shell=True, text=True)
+            join(download_command), capture_output=True, check=True, shell=True, text=True)
     except CalledProcessError as e:
         if e.stdout.find("could not find record"):
             add_new_workflow(workflow_file, workflow_name)
-            pass
 
     if workflow_contents != download_result.stdout:
         try:
-            replace_command = "relay workflow replace " + \
-                workflow_name + " -f " + workflow_file
-            replace_result = run(
-                replace_command, capture_output=True, check=True, shell=True, text=True)
+            replace_command = ["relay", "workflow", "replace",
+                               quote(workflow_name), "-f", quote(workflow_file)]
+            replace_command.extend(cli_args)
+            run(join(replace_command), capture_output=True,
+                check=True, shell=True, text=True)
         except CalledProcessError as e:
             print("Could not replace workflow", e, e.stdout)
             exit(1)
@@ -67,8 +71,10 @@ def download_and_replace(workflow_file, workflow_name, workflow_contents):
 
 def add_new_workflow(workflow_file, workflow_name):
     try:
-        add_command = "relay workflow add " + workflow_name + " -f" + workflow_file
-        add_result = run(add_command, capture_output=True,
+        add_command = ["relay", "workflow", "add",
+                       quote(workflow_name), "-f", quote(workflow_file)]
+        add_command.extend(cli_args)
+        add_result = run(join(add_command), capture_output=True,
                          check=True, shell=True, text=True)
     except CalledProcessError as e:
         print("Could not add new workflow", e, e.stdout)
@@ -76,13 +82,12 @@ def add_new_workflow(workflow_file, workflow_name):
     print("Added new workflow to your account, view it on the web:", add_result.stdout)
     exit(0)
 
-# we expect config to be a yaml list of maps, each with keys
-# - `file` for the filesystem path to its corresponding file in the repo
-# - `name` for the service name of the workflow and
-
 
 def update_workflows():
 
+    # we expect config to be a yaml list of maps, each with keys
+    # - `file` for the filesystem path to its corresponding file in the repo
+    # - `name` for the service name of the workflow and
     mapping_file = 'workflow_mappings.yaml'
 
     if os.path.exists(mapping_file):
@@ -95,15 +100,13 @@ def update_workflows():
             download_and_replace(
                 workflow_file, workflow_name, workflow_contents)
 
-    else:  # no config file, test for environment vars to operate on one workflow
+    else:
         workflow_file, workflow_name, workflow_contents = setup_workflow(
-            env['INPUT_RELAY_WORKFLOW_FILE'], env['INPUT_RELAY_WORKFLOW'])
+            environ['INPUT_RELAY_WORKFLOW_FILE'], environ['INPUT_RELAY_WORKFLOW'])
         download_and_replace(workflow_file, workflow_name, workflow_contents)
 
 
-os.chdir(env['GITHUB_WORKSPACE'])
-
-configure_cli()
+os.chdir(environ['GITHUB_WORKSPACE'])
 
 do_login()
 

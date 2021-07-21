@@ -1,27 +1,24 @@
-name: 'Updates and runs a relay.sh workflow on commit'
-description: 'This action will update and run a named workflow on the service from github'
+name: 'Updates a Relay workflow on commit'
+description: 'This action will update a named Relay workflow from GitHub'
 inputs:
-  relay_host_api:
-    required: false
-    description: "Relay Host API address"
-  relay_host_ui:
-    required: false
-    description: "Relay Host UI address"
-  relay_username:
+  relay_api_token:
     required: true
-    description: "Username on the relay service (stored as a repo secret)"
-  relay_password:
-    required: true
-    description: "Login password for relay (stored as a repo secret)"
+    description: "Relay API token"
   relay_workflow:
     required: false
     description: "Relay workflow name"
   relay_workflow_file:
     required: false
     description: "Relay workflow file"
-outputs:
-  reponse:
-    description: "response message from the relay service"
+  relay_configuration_file:
+    required: false
+    description: "Relay CLI configuration file"
+  relay_configuration_context:
+    required: false
+    description: "Relay CLI configuration context"
+  relay_configuration_debug:
+    required: false
+    description: "Relay CLI configuration debug"
 runs:
   using: 'docker'
   image: 'Dockerfile'
