@@ -26,9 +26,10 @@ def do_login():
         login_command = ["relay", "auth", "login", "--stdin"]
         login_command.extend(cli_args)
         run(join(login_command), input=environ['INPUT_RELAY_API_TOKEN'],
-            stderr=STDOUT, stdout=PIPE, check=True, shell=True, text=True)
+            capture_output=True, check=True, shell=True, text=True)
     except CalledProcessError as e:
-        print("relay auth login failed: ", e, e.stdout)
+        print("relay auth login failed: ", e)
+        print(e.stderr)
         exit(1)
 
 
@@ -40,10 +41,11 @@ def save_workflow(workflow_file, workflow_name):
         save_workflow_command = ["relay", "workflow", "save",
                                  quote(workflow_name), "-f", quote(workflow_file)]
         save_workflow_command.extend(cli_args)
-        run(join(save_workflow_command), capture_output=True,
-            check=True, shell=True, text=True)
+        run(join(save_workflow_command),
+            capture_output=True, check=True, shell=True, text=True)
     except CalledProcessError as e:
-        print("relay workflow save failed: ", e, e.stdout)
+        print("relay workflow save failed:", e)
+        print(e.stderr)
         exit(1)
 
 
