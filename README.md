@@ -1,7 +1,5 @@
 # relaysh-docker-action
 
-This GitHub Action will update and run a [Relay](https://relay.sh) workflow upon commit to a repository.
-
 ## Usage
 
 To use it, add a GitHub Actions workflow in the repository where you keep your Relay workflows.
